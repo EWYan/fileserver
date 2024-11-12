@@ -1,0 +1,93 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.file-browser {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    transition: width 0.3s ease;
+}
+
+.command-line-section {
+    flex: 1;
+    padding: 20px;
+    background-color: #000;
+    color: #0c0;
+    display: flex;
+    flex-direction: column;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+.command-line-section h2 {
+    color: #0c0;
+}
+
+form, #command-line {
+    margin-bottom: 20px;
+}
+
+#command-prompt {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.prompt {
+    color: #0c0;
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+input[type="text"], button {
+    padding: 8px;
+    margin-right: 10px;
+}
+
+#command-input {
+    flex-grow: 1;
+    font-family: monospace;
+    background-color: #000;
+    color: #0c0;
+    border: 1px solid #0c0;
+}
+
+#command-output {
+    flex-grow: 1;
+    border: 1px solid #0c0;
+    padding: 10px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-y: auto;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+a {
+    color: #0066cc;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+a:hover {
+    text-decoration: underline;
+}

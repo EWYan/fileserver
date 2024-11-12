@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>File Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 1;
+        }
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        button, a.button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+        button:hover, a.button:hover {
+            background-color: #45a049;
+        }
+        .folder {
+            font-weight: bold;
+            color: #1a73e8;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>File Server</h1>
+    <form method="POST" action="{{ url_for('download_selected') }}">
+        <ul>
+            {% if directory != app.config['SHARED_DIRECTORY'] %}
+            <li>
+                <a href="{{ url_for('index', directory=dirname_filter(directory)) }}" class="button">..</a>
+            </li>
+            {% endif %}
+            {% for file in files %}
+            <li>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="selected_files" value="{{ file.name }}">
+                    {% if file.is_dir %}
+                    <a href="{{ url_for('index', directory=os.path.join(directory, file.name)) }}" class="folder">{{ file.name }}</a>
+                    {% else %}
+                    {{ file.name }}
+                    {% endif %}
+                </label>
+                {% if file.is_dir %}
+                    <a href="{{ url_for('download_folder', directory=directory, foldername=file.name) }}" class="button">Download Folder</a>
+                {% else %}
+                    {% if file.can_preview %}
+                    <a href="{{ url_for('preview_file', directory=directory, filename=file.name) }}" class="button" target="_blank">Preview</a>
+                    {% endif %}
+                    <a href="{{ url_for('download_file', directory=directory, filename=file.name) }}" class="button">Download</a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        <input type="hidden" name="directory" value="{{ directory }}">
+        <button type="submit">Download Selected</button>
+    </form>
+</body>
+
+</html>
