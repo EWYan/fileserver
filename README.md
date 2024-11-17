@@ -1,5 +1,6 @@
 # Simple File Sharing App based on Flask
 A lightweight web application for sharing files between devices on a local network
+and most of the code implement by Cursor AI (I just write the prompt and let it generate the code, and then I refactor the code to make it more readable and efficient.)
 
 ## Requirements
 - Python 3.10+
