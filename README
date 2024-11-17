@@ -1,0 +1,10 @@
+# Simple File Sharing App based on Flask
+
+## Requirements
+- Python 3.10+
+- Flask
+
+## Usage
+```bash
+python app.py --shared-directory /path/to/shared/directory
+```

@@ -13,9 +13,9 @@ import io
 import argparse
 import mimetypes
 from pathlib import Path
-import qrcode
+# import qrcode
 import socket
-from PIL import Image
+# from PIL import Image
 
 app = Flask(__name__)
 
@@ -106,10 +106,10 @@ def preview_file():
             return "Unable to determine file type for preview.", 400
     return "Filename not specified.", 400
 
-def generate_qr_code(url):
-    qr = qrcode.make(url)
-    qr_image = qr.convert("RGB")  # Convert to a format that can be displayed
-    qr_image.show()
+# def generate_qr_code(url):
+#     qr = qrcode.make(url)
+#     qr_image = qr.convert("RGB")  # Convert to a format that can be displayed
+#     qr_image.show()
 
 @app.route('/download_selected', methods=['POST'])
 def download_selected():
