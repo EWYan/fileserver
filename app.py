@@ -106,30 +106,6 @@ def preview_file():
             return "Unable to determine file type for preview.", 400
     return "Filename not specified.", 400
 
-@app.route('/download_all', methods=['GET'])
-def download_all_files():
-    directory = request.args.get('directory', app.config['SHARED_DIRECTORY'])
-    if not is_safe_path(app.config['SHARED_DIRECTORY'], directory):
-        abort(403)  # Forbidden
-
-    try:
-        # Create a zip file in memory
-        memory_file = io.BytesIO()
-        with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zf:
-            for root, _, files in os.walk(directory):
-                for file in files:
-                    file_path = os.path.join(root, file)
-                    zf.write(file_path, os.path.relpath(file_path, directory))
-        memory_file.seek(0)
-        
-        # Use the directory name as the download name
-        folder_name = os.path.basename(os.path.normpath(directory))
-        zip_filename = f"{folder_name}.zip"
-        
-        return send_file(memory_file, download_name=zip_filename, as_attachment=True)
-    except Exception as e:
-        return str(e), 500
-
 def generate_qr_code(url):
     qr = qrcode.make(url)
     qr_image = qr.convert("RGB")  # Convert to a format that can be displayed
@@ -158,22 +134,9 @@ def download_selected():
         memory_file.seek(0)
 
         zip_filename = "selected_files.zip"
-        return send_file(
-            memory_file,
-            download_name=zip_filename,
-            as_attachment=True,
-            max_age=0
-        )
-    except ConnectionError:
-        return "", 204  # Client disconnected
+        return send_file(memory_file, download_name=zip_filename, as_attachment=True)
     except Exception as e:
-        app.logger.error(f"Download error: {str(e)}")
         return str(e), 500
-    finally:
-        try:
-            memory_file.close()
-        except:
-            pass
 
 @app.route('/download_folder', methods=['GET'])
 def download_folder():
@@ -188,34 +151,22 @@ def download_folder():
         abort(404)  # Not Found
 
     try:
+        # Create a zip file in memory
         memory_file = io.BytesIO()
         with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zf:
             for root, _, files in os.walk(folder_path):
                 for file in files:
-                    try:
-                        file_path = os.path.join(root, file)
-                        arcname = os.path.relpath(file_path, folder_path)
-                        zf.write(file_path, arcname)
-                    except ConnectionError:
-                        return "", 204  # Client disconnected
-        
+                    file_path = os.path.join(root, file)
+                    zf.write(file_path, os.path.relpath(file_path, folder_path))
         memory_file.seek(0)
-        return send_file(
-            memory_file,
-            download_name=f"{foldername}.zip",
-            as_attachment=True,
-            max_age=0
-        )
-    except ConnectionError:
-        return "", 204  # Client disconnected
+        
+        # Use the directory name as the download name
+        folder_name = os.path.basename(os.path.normpath(folder_path))
+        zip_filename = f"{folder_name}.zip"
+        
+        return send_file(memory_file, download_name=zip_filename, as_attachment=True)
     except Exception as e:
-        app.logger.error(f"Download error: {str(e)}")
         return str(e), 500
-    finally:
-        try:
-            memory_file.close()
-        except:
-            pass
 
 @app.errorhandler(Exception)
 def handle_exception(e):
